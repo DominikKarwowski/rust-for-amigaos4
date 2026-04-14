@@ -54,7 +54,8 @@ echo
 
 echo "[1/2] Compiling Rust (host)..."
 cd "$REPO_ROOT/$PROJECT"
-cargo +nightly build --release
+# Toolchain is pinned by rust-toolchain.toml at the repo root; no +nightly override.
+cargo build --release
 echo "  Rust staticlib built."
 echo
 

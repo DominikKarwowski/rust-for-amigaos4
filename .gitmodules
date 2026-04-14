@@ -1,0 +1,3 @@
+[submodule "clib4-src"]
+	path = clib4-src
+	url = https://github.com/AmigaLabs/clib4.git

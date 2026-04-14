@@ -48,7 +48,8 @@ echo.
 
 echo [1/2] Compiling Rust (host)...
 cd "%REPO_ROOT%\%~1"
-cargo +nightly build --release
+REM Toolchain is pinned by rust-toolchain.toml at the repo root; no +nightly override.
+cargo build --release
 if errorlevel 1 (
     echo ERROR: Rust compilation failed.
     exit /b 1

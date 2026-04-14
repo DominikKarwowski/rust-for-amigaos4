@@ -18,6 +18,7 @@
 #include <exec/types.h>
 #include <exec/resident.h>
 #include <exec/libraries.h>
+#include <dos/dos.h>   /* BPTR */
 
 /* --------------------------------------------------------------------------
  * Library identity

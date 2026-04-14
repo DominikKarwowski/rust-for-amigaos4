@@ -14,18 +14,23 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM 2. Install nightly toolchain
-echo [1/3] Installing Rust nightly toolchain...
-rustup toolchain install nightly
+REM 2. Initialise submodules (clib4 source pinned in clib4-src\)
+echo [1/4] Initialising git submodules (clib4 source)...
+git submodule update --init --recursive
 echo   Done.
 
-REM 3. Install rust-src (needed for build-std)
-echo [2/3] Installing rust-src component...
-rustup component add rust-src --toolchain nightly
+REM 3. Install Rust toolchain pinned by rust-toolchain.toml
+echo [2/4] Installing Rust toolchain pinned by rust-toolchain.toml...
+rustup show active-toolchain >nul
 echo   Done.
 
-REM 4. Pull Docker image (via WSL)
-echo [3/3] Pulling AmigaOS cross-compiler Docker image via WSL...
+REM 4. Install rust-src (needed for build-std)
+echo [3/4] Ensuring rust-src component is present...
+rustup component add rust-src
+echo   Done.
+
+REM 5. Pull Docker image (via WSL)
+echo [4/4] Pulling AmigaOS cross-compiler Docker image via WSL...
 wsl sh -c "docker pull walkero/amigagccondocker:os4-gcc11"
 echo   Done.
 

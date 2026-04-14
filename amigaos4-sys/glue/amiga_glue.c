@@ -28,6 +28,7 @@
 
 void amiga_debug_str(const char *s)
 {
+    if (IExec == NULL || s == NULL) return;
     IExec->DebugPrintF("%s", s);
 }
 

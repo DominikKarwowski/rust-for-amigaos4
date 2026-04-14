@@ -15,6 +15,7 @@ pub mod types;
 pub mod interfaces;
 pub mod wrappers;
 pub mod glue;
+#[cfg(target_arch = "powerpc")]
 pub mod ppc_asm;
 
 pub use types::*;

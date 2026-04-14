@@ -36,8 +36,9 @@ pub const CACHE_LINE: usize = 32;
 /// `addr` must be a valid pointer to at least `len` bytes.
 #[inline]
 pub unsafe fn cache_flush(addr: *const u8, len: usize) {
+    if len == 0 { return; }
     let mut p = (addr as usize & !(CACHE_LINE - 1)) as *const u8;
-    let end = unsafe { addr.add(len) };
+    let end = (addr as usize).wrapping_add(len) as *const u8;
     while p < end {
         unsafe {
             asm!("dcbst 0, {0}", in(reg) p, options(nostack, preserves_flags));
@@ -58,8 +59,9 @@ pub unsafe fn cache_flush(addr: *const u8, len: usize) {
 /// `addr` must be a valid pointer to at least `len` bytes.
 #[inline]
 pub unsafe fn cache_invalidate(addr: *const u8, len: usize) {
+    if len == 0 { return; }
     let mut p = (addr as usize & !(CACHE_LINE - 1)) as *const u8;
-    let end = unsafe { addr.add(len) };
+    let end = (addr as usize).wrapping_add(len) as *const u8;
     while p < end {
         unsafe {
             asm!("dcbf 0, {0}", in(reg) p, options(nostack));

@@ -13,7 +13,9 @@ rust-for-amigaos4/
   amigaos4-sys/       Raw FFI bindings (129 feature-gated interfaces, C glue, PPC asm)
   amigaos4-alloc/     Global allocator backends (Clib4Allocator, ExecAllocator)
   amigaos4/           Safe wrappers: 25 modules (GUI, networking, async, DOS, timer, clipboard, POSIX)
-  clib4-nightly/      Pre-built clib4 C library overlay
+  clib4-nightly/      Pre-built clib4 C library overlay (binaries only)
+  clib4-src/          clib4 source pinned via submodule at commit 0d5fe579
+  rust-toolchain.toml Pins the exact Rust nightly (2026-03-01)
   target-spec/        Custom Rust target JSON + fake linker scripts
   templates/          app/, driver/, and library/ starter templates
   examples/           12 examples (hello, hello-driver, hello-library, test-harness,

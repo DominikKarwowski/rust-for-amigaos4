@@ -1,11 +1,17 @@
 # Rust build output
 target/
 
-# C build output
+# C build output (includes clib4-src/build/ when rebuilding clib4 from source)
 build/
 
 # Fake linker logs
 fake-linker.log
+
+# Editor / IDE state
+.vscode/
+.idea/
+*.swp
+*.swo
 
 # OS files
 .DS_Store
