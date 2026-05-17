@@ -1,0 +1,33 @@
+[package]
+name = "rust-for-amigaos4-tests"
+version = "0.1.0"
+edition = "2021"
+description = "Black-box test suite for the rust-for-amigaos4 project"
+publish = false
+
+[lib]
+name = "amiga_tests"
+path = "src/lib.rs"
+
+[[bin]]
+name = "amiga-test-runner"
+path = "src/main.rs"
+
+[dependencies]
+# No runtime dependencies — uses only std. Tests subprocess-orchestrate cargo
+# and inspect file contents to verify project invariants.
+
+[features]
+default = []
+# `link-amigaos4` enables Rust integration tests that import amigaos4 as a
+# path dep. Off by default because on Windows the link fails (unresolved
+# IExec/IDOS/etc. globals); CI on Linux can enable it.
+link-amigaos4 = ["dep:amigaos4", "dep:amigaos4-sys"]
+
+[dependencies.amigaos4]
+path = "../amigaos4"
+optional = true
+
+[dependencies.amigaos4-sys]
+path = "../amigaos4-sys"
+optional = true

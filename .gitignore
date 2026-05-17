@@ -16,3 +16,9 @@ fake-linker.log
 # OS files
 .DS_Store
 Thumbs.db
+
+# Scratch / one-off scripts. The canonical scratch directory for this
+# project lives at C:/msys64/home/rich_/Projects/Rust/tmp (outside the
+# repo). This pattern also keeps any in-repo tmp/ accidentally created
+# from being tracked.
+tmp/
