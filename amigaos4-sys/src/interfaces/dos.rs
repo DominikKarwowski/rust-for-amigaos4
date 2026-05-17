@@ -178,7 +178,7 @@ pub struct DOSIFace {
     pub GetVar: unsafe extern "C" fn(*mut DOSIFace, CONST_STRPTR, STRPTR, i32, u32) -> i32, // 165: 720
     pub DeleteVar: unsafe extern "C" fn(*mut DOSIFace, CONST_STRPTR, u32) -> i32, // 166: 724
     pub FindVar: unsafe extern "C" fn(*mut DOSIFace, CONST_STRPTR, u32) -> *mut LocalVar, // 167: 728
-    pub PRIVATECliInit: unsafe extern "C" fn(*mut DOSIFace, *mut DosPacket) -> i32, // 168: 732
+    pub CliInit: unsafe extern "C" fn(*mut DOSIFace, *mut DosPacket) -> i32, // 168: 732
     pub CliInitNewcli: unsafe extern "C" fn(*mut DOSIFace, *mut DosPacket) -> i32, // 169: 736
     pub CliInitRun: unsafe extern "C" fn(*mut DOSIFace, *mut DosPacket) -> i32, // 170: 740
     pub WriteChars: unsafe extern "C" fn(*mut DOSIFace, CONST_STRPTR, u32) -> i32, // 171: 744
@@ -315,9 +315,15 @@ pub struct DOSIFace {
     pub AsyncIOTags: APTR, // 302: 1268 (varargs)
     pub WaitForChildExit: unsafe extern "C" fn(*mut DOSIFace, u32) -> i32, // 303: 1272
     pub CheckForChildExit: unsafe extern "C" fn(*mut DOSIFace, u32) -> i32, // 304: 1276
-    pub Reserved15_UNIMPLEMENTED: APTR, // 305: 1280
-    pub Reserved16_UNIMPLEMENTED: APTR, // 306: 1284
-    pub Reserved17_UNIMPLEMENTED: APTR, // 307: 1288
-    pub Reserved18_UNIMPLEMENTED: APTR, // 308: 1292
+    pub GetContext: unsafe extern "C" fn(*mut DOSIFace, CONST_STRPTR) -> APTR, // 305: 1280
+    pub SetContext: unsafe extern "C" fn(*mut DOSIFace, CONST_STRPTR, u32, APTR, i32) -> i32, // 306: 1284
+    pub GetFinalData: unsafe extern "C" fn(*mut DOSIFace) -> i32, // 307: 1288
+    pub SetChildPID: unsafe extern "C" fn(*mut DOSIFace, *const Process, u32) -> u32, // 308: 1292
+    pub GetCliEpilog: unsafe extern "C" fn(*mut DOSIFace, STRPTR, i32) -> i32, // 309: 1296
+    pub SetCliEpilog: unsafe extern "C" fn(*mut DOSIFace, CONST_STRPTR) -> i32, // 310: 1300
+    pub RelativePath: unsafe extern "C" fn(*mut DOSIFace, u32, u32, STRPTR, u32) -> i32, // 311: 1304
+    pub SubLock: unsafe extern "C" fn(*mut DOSIFace, u32, u32) -> i32, // 312: 1308
+    pub HexToLongLong: unsafe extern "C" fn(*mut DOSIFace, CONST_STRPTR, *mut u64) -> i32, // 313: 1312
+    pub StrToLongLong: unsafe extern "C" fn(*mut DOSIFace, CONST_STRPTR, *mut i64) -> i32, // 314: 1316
 }
 

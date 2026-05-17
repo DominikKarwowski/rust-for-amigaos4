@@ -797,8 +797,8 @@ pub unsafe fn dos_find_var(name: CONST_STRPTR, r#type: u32) -> *mut LocalVar {
 }
 
 #[inline]
-pub unsafe fn dos_privatecli_init(dp: *mut DosPacket) -> i32 {
-    ((*IDOS).PRIVATECliInit)(IDOS, dp)
+pub unsafe fn dos_cli_init(dp: *mut DosPacket) -> i32 {
+    ((*IDOS).CliInit)(IDOS, dp)
 }
 
 #[inline]
@@ -1374,5 +1374,55 @@ pub unsafe fn dos_wait_for_child_exit(pid: u32) -> i32 {
 #[inline]
 pub unsafe fn dos_check_for_child_exit(pid: u32) -> i32 {
     ((*IDOS).CheckForChildExit)(IDOS, pid)
+}
+
+#[inline]
+pub unsafe fn dos_get_context(name: CONST_STRPTR) -> APTR {
+    ((*IDOS).GetContext)(IDOS, name)
+}
+
+#[inline]
+pub unsafe fn dos_set_context(name: CONST_STRPTR, flags: u32, value: APTR, reserved: i32) -> i32 {
+    ((*IDOS).SetContext)(IDOS, name, flags, value, reserved)
+}
+
+#[inline]
+pub unsafe fn dos_get_final_data() -> i32 {
+    ((*IDOS).GetFinalData)(IDOS)
+}
+
+#[inline]
+pub unsafe fn dos_set_child_pid(proc_: *const Process, pid: u32) -> u32 {
+    ((*IDOS).SetChildPID)(IDOS, proc_, pid)
+}
+
+#[inline]
+pub unsafe fn dos_get_cli_epilog(buf: STRPTR, len: i32) -> i32 {
+    ((*IDOS).GetCliEpilog)(IDOS, buf, len)
+}
+
+#[inline]
+pub unsafe fn dos_set_cli_epilog(str: CONST_STRPTR) -> i32 {
+    ((*IDOS).SetCliEpilog)(IDOS, str)
+}
+
+#[inline]
+pub unsafe fn dos_relative_path(refdir: u32, objlock: u32, buffer: STRPTR, bufsize: u32) -> i32 {
+    ((*IDOS).RelativePath)(IDOS, refdir, objlock, buffer, bufsize)
+}
+
+#[inline]
+pub unsafe fn dos_sub_lock(src: u32, dst: u32) -> i32 {
+    ((*IDOS).SubLock)(IDOS, src, dst)
+}
+
+#[inline]
+pub unsafe fn dos_hex_to_long_long(string: CONST_STRPTR, value_ptr: *mut u64) -> i32 {
+    ((*IDOS).HexToLongLong)(IDOS, string, value_ptr)
+}
+
+#[inline]
+pub unsafe fn dos_str_to_long_long(string: CONST_STRPTR, value: *mut i64) -> i32 {
+    ((*IDOS).StrToLongLong)(IDOS, string, value)
 }
 
