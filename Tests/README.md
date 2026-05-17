@@ -22,6 +22,7 @@ documentation, and the FFI shape. Always host-runnable.
 | `tests/rust_doc_claims.rs` | Counts and assertions in README/CLAUDE.md/roadmap match reality. |
 | `tests/rust_regression.rs` | Specific past bugs cannot return silently. |
 | `tests/rust_signature_audit.rs` | Every regular vtable method in the 19 wrappered interfaces has a Rust wrapper with the bindgen-canonical snake_case name; every feature flag has an `interfaces/<name>.rs`. **Fails on any gap** — see gap policy below. |
+| `tests/rust_sdk_audit.rs` | Every method declared in the AmigaOS 4 SDK interface headers is present in the Rust binding. Runs opportunistically: if the SDK is found at `C:\msys64\home\rich_\sdk` (or `$AMIGA_SDK`), the audit executes and **fails on any gap**; otherwise the test passes with a notice on stderr. |
 
 ### 2. `combined_*` — Combined
 
@@ -55,7 +56,15 @@ future addition; for now they're invoked manually.
 > All AmigaOS 4 SDK methods/functions implemented in Rust must be
 > covered by the test suite.
 
-This is enforced by `rust_signature_audit.rs`:
+Two audits enforce this together:
+
+`rust_sdk_audit.rs` is the authoritative outer check — it compares
+each Rust IFace struct against the actual SDK header (`exec.h`,
+`dos.h`, etc.) and reports any SDK method that isn't bound in Rust.
+This runs on machines where the AmigaOS 4 SDK is installed (default:
+`C:\msys64\home\rich_\sdk`); skips with a notice otherwise.
+
+`rust_signature_audit.rs` is the inner consistency check:
 
 * For every regular method in each of the 19 vtable structs in
   `amigaos4-sys/src/interfaces/<name>.rs`, the audit requires a
