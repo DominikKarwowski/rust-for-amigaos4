@@ -193,3 +193,67 @@ fn build_scripts_dont_assume_nproc_on_windows() {
         "build.bat references nproc — won't work on cmd.exe:\n  {}",
         line_with_nproc.unwrap_or(""));
 }
+
+// ── dos binding additions (this session) ──────────────────────
+//
+// Backfilled 10 SDK methods at DOSIFace positions 305-314 that the
+// Rust binding had previously stubbed as Reserved15-18_UNIMPLEMENTED
+// (4 slots) plus 6 entries the older binding didn't reach. Pin them
+// here so a fresh bindgen run against a *stale* SDK can't silently
+// drop them again — the rust_sdk_audit catches drift against the
+// current SDK, but this guard is independent of whether the SDK is
+// available on the box running the suite.
+
+const DOS_BACKFILLED_METHODS: &[&str] = &[
+    "GetContext", "SetContext", "GetFinalData", "SetChildPID",
+    "GetCliEpilog", "SetCliEpilog", "RelativePath", "SubLock",
+    "HexToLongLong", "StrToLongLong",
+];
+
+const DOS_BACKFILLED_WRAPPERS: &[&str] = &[
+    "dos_get_context", "dos_set_context", "dos_get_final_data",
+    "dos_set_child_pid", "dos_get_cli_epilog", "dos_set_cli_epilog",
+    "dos_relative_path", "dos_sub_lock", "dos_hex_to_long_long",
+    "dos_str_to_long_long",
+];
+
+#[test]
+fn dos_iface_has_backfilled_methods() {
+    let text = read_repo_file("amigaos4-sys/src/interfaces/dos.rs");
+    let missing: Vec<&&str> = DOS_BACKFILLED_METHODS.iter()
+        .filter(|m| !text.contains(&format!("pub {}:", m)))
+        .collect();
+    assert!(missing.is_empty(),
+        "DOSIFace lost backfilled vtable methods (regen against stale SDK?):\n  - {:?}",
+        missing);
+}
+
+#[test]
+fn dos_wrappers_for_backfilled_methods_exist() {
+    let text = read_repo_file("amigaos4-sys/src/wrappers/dos.rs");
+    let missing: Vec<&&str> = DOS_BACKFILLED_WRAPPERS.iter()
+        .filter(|w| !text.contains(&format!("pub unsafe fn {}(", w)))
+        .collect();
+    assert!(missing.is_empty(),
+        "amigaos4-sys/src/wrappers/dos.rs is missing wrappers:\n  - {:?}",
+        missing);
+}
+
+#[test]
+fn dos_cli_init_not_under_private_prefix() {
+    // The SDK has always called this method `CliInit`. An older
+    // amigaos4-bindgen convention prefixed it with `PRIVATE`. The
+    // rename to match the SDK should stick; if a regen reintroduces
+    // the PRIVATE prefix, fail.
+    let iface = read_repo_file("amigaos4-sys/src/interfaces/dos.rs");
+    let wrap  = read_repo_file("amigaos4-sys/src/wrappers/dos.rs");
+
+    assert!(iface.contains("pub CliInit:"),
+        "interfaces/dos.rs missing `pub CliInit:` — was it reverted to PRIVATECliInit?");
+    assert!(!iface.contains("pub PRIVATECliInit:"),
+        "interfaces/dos.rs has `pub PRIVATECliInit:` — SDK names this method CliInit");
+    assert!(wrap.contains("pub unsafe fn dos_cli_init("),
+        "wrappers/dos.rs missing `dos_cli_init` — was it reverted to dos_privatecli_init?");
+    assert!(!wrap.contains("pub unsafe fn dos_privatecli_init("),
+        "wrappers/dos.rs has stale `dos_privatecli_init` — SDK names this method CliInit");
+}
