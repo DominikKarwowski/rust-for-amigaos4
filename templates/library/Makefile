@@ -24,7 +24,10 @@ CFLAGS    = -O2 -Wall -D__AMIGAOS4__ -U__USE_INLINE__ -I$(SDK_INC) \
             -fno-tree-loop-distribute-patterns -ffunction-sections -fdata-sections
 
 # Linker flags — library mode (no CRT, no default libs)
-LDFLAGS   = -nostartfiles -nodefaultlibs -Wl,--gc-sections
+# --undefined=RomTag forces the Resident struct to be retained as a GC root
+# (otherwise --gc-sections drops it — nothing statically references the RomTag,
+# AmigaOS finds it by scanning memory for RTC_MATCHWORD).
+LDFLAGS   = -nostartfiles -nodefaultlibs -Wl,--gc-sections -Wl,--undefined=RomTag
 LIBS      = -lgcc
 
 .PHONY: all clean
