@@ -7,9 +7,14 @@ use crate::interfaces::iffparse::*;
 
 // ---- IIFFParse (IFFParseIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IIFFParse: *mut IFFParseIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IIFFParse: *mut IFFParseIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn iffparse_alloc_iff() -> *mut IFFHandle {

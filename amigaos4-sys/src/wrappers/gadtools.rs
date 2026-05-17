@@ -7,9 +7,14 @@ use crate::interfaces::gadtools::*;
 
 // ---- IGadTools (GadToolsIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IGadTools: *mut GadToolsIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IGadTools: *mut GadToolsIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn gadtools_create_gadget_a(kind: u32, gad: *mut Gadget, ng: *const NewGadget, taglist: *const TagItem) -> *mut Gadget {

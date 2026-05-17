@@ -7,9 +7,14 @@ use crate::interfaces::application::*;
 
 // ---- IApplication (ApplicationIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IApplication: *mut ApplicationIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IApplication: *mut ApplicationIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn application_set_app_lib_attrs_a(tags: *mut TagItem) -> u32 {

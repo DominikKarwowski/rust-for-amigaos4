@@ -7,9 +7,14 @@ use crate::interfaces::timer::*;
 
 // ---- ITimer (TimerIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static ITimer: *mut TimerIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut ITimer: *mut TimerIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn timer_add_time(dest: *mut TimeVal, src: *const TimeVal) {

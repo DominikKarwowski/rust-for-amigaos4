@@ -7,9 +7,14 @@ use crate::interfaces::icon::*;
 
 // ---- IIcon (IconIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IIcon: *mut IconIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IIcon: *mut IconIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn icon_free_free_list(freelist: *mut FreeList) {

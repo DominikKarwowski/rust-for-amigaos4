@@ -7,9 +7,14 @@ use crate::interfaces::asl::*;
 
 // ---- IAsl (AslIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IAsl: *mut AslIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IAsl: *mut AslIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn asl_obsolete_alloc_file_request() -> *mut FileRequester {

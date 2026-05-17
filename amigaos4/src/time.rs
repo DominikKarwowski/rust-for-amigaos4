@@ -5,9 +5,15 @@
 //!
 //! Requires the `time` feature (enabled by default via `app`).
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     fn clock_gettime(clk_id: u32, tp: *mut Timespec) -> i32;
 }
+
+// Host stub so `cargo test` on x86_64 links. Never called from tests;
+// only `Instant::now` reaches it, and no host test invokes Instant.
+#[cfg(not(target_arch = "powerpc"))]
+unsafe fn clock_gettime(_clk_id: u32, _tp: *mut Timespec) -> i32 { -1 }
 
 const CLOCK_MONOTONIC: u32 = 1;
 

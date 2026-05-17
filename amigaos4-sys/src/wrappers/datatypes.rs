@@ -7,9 +7,14 @@ use crate::interfaces::datatypes::*;
 
 // ---- IDataTypes (DataTypesIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IDataTypes: *mut DataTypesIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IDataTypes: *mut DataTypesIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn datatypes_rldispatch(rmsg: *mut RexxMsg, result: *mut STRPTR) -> i32 {

@@ -7,9 +7,14 @@ use crate::interfaces::diskfont::*;
 
 // ---- IDiskfont (DiskfontIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IDiskfont: *mut DiskfontIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IDiskfont: *mut DiskfontIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn diskfont_open_disk_font(textAttr: *const TextAttr) -> *mut TextFont {

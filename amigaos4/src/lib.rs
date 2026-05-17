@@ -49,20 +49,29 @@ pub mod async_rt;
 pub mod timer;
 pub mod clipboard;
 
-// Application-only (require clib4 POSIX functions):
-#[cfg(feature = "fs")]
+// Application-only (require clib4 POSIX functions). Doubly gated: the
+// user must opt in via the feature *and* the build must be for the PPC
+// target — these modules wrap clib4 symbols that only exist at link
+// time inside the AmigaOS Docker toolchain. Host builds (cargo test on
+// x86_64) skip them entirely.
+//
+// `time` is the exception: it stays available on the host so that the
+// pure-Rust `Duration` arithmetic remains unit-testable. The PPC-only
+// pieces (the `clock_gettime` extern and `Instant::now`) are gated
+// inside `time.rs`.
+#[cfg(all(feature = "fs", target_arch = "powerpc"))]
 pub mod fs;
 #[cfg(feature = "time")]
 pub mod time;
-#[cfg(feature = "env")]
+#[cfg(all(feature = "env", target_arch = "powerpc"))]
 pub mod env;
-#[cfg(feature = "thread")]
+#[cfg(all(feature = "thread", target_arch = "powerpc"))]
 pub mod thread;
-#[cfg(feature = "net")]
+#[cfg(all(feature = "net", target_arch = "powerpc"))]
 pub mod net;
-#[cfg(feature = "net")]
+#[cfg(all(feature = "net", target_arch = "powerpc"))]
 pub mod dns;
-#[cfg(feature = "net")]
+#[cfg(all(feature = "net", target_arch = "powerpc"))]
 pub mod http;
 
 pub use error::{AmigaError, Result};

@@ -7,9 +7,14 @@ use crate::interfaces::locale::*;
 
 // ---- ILocale (LocaleIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static ILocale: *mut LocaleIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut ILocale: *mut LocaleIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn locale_close_catalog(catalog: *mut Catalog) {

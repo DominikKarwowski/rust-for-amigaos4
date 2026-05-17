@@ -7,9 +7,14 @@ use crate::interfaces::keymap::*;
 
 // ---- IKeymap (KeymapIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IKeymap: *mut KeymapIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IKeymap: *mut KeymapIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn keymap_set_key_map_default(keyMap: *const KeyMap) {

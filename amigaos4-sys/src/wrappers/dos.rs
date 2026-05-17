@@ -7,9 +7,14 @@ use crate::interfaces::dos::*;
 
 // ---- IDOS (DOSIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IDOS: *mut DOSIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IDOS: *mut DOSIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn dos_open(name: CONST_STRPTR, accessMode: i32) -> u32 {

@@ -7,9 +7,14 @@ use crate::interfaces::commodities::*;
 
 // ---- ICommodities (CommoditiesIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static ICommodities: *mut CommoditiesIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut ICommodities: *mut CommoditiesIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn commodities_create_cx_obj(r#type: u32, arg1: i32, arg2: i32) -> *mut APTR {

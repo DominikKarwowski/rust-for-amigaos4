@@ -7,9 +7,14 @@ use crate::interfaces::layers::*;
 
 // ---- ILayers (LayersIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static ILayers: *mut LayersIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut ILayers: *mut LayersIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn layers_init_layers(li: *mut Layer_Info) {

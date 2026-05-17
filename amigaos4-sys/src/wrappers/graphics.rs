@@ -7,9 +7,14 @@ use crate::interfaces::graphics::*;
 
 // ---- IGraphics (GraphicsIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IGraphics: *mut GraphicsIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IGraphics: *mut GraphicsIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn graphics_blt_bit_map(srcBitMap: *mut APTR, xSrc: i16, ySrc: i16, destBitMap: *mut BitMap, xDest: i16, yDest: i16, xSize: i16, ySize: i16, minterm: u8, mask: u8, tempA: APTR) -> u32 {

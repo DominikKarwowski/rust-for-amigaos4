@@ -7,9 +7,14 @@ use crate::interfaces::intuition::*;
 
 // ---- IIntuition (IntuitionIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IIntuition: *mut IntuitionIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IIntuition: *mut IntuitionIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn intuition_open_intuition() {

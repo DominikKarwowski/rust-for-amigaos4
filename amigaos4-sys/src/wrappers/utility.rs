@@ -7,9 +7,14 @@ use crate::interfaces::utility::*;
 
 // ---- IUtility (UtilityIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IUtility: *mut UtilityIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IUtility: *mut UtilityIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn utility_allocate_tag_items(numTags: u32) -> *mut TagItem {

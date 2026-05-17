@@ -7,9 +7,14 @@ use crate::interfaces::exec::*;
 
 // ---- IExec (ExecIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IExec: *mut ExecIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IExec: *mut ExecIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn exec_add_head(list: *mut List, node: *mut Node) {

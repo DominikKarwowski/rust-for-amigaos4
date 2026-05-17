@@ -7,9 +7,14 @@ use crate::interfaces::rexxsys::*;
 
 // ---- IRexxSys (RexxSysIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IRexxSys: *mut RexxSysIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IRexxSys: *mut RexxSysIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn rexxsys_create_argstring(string: CONST_STRPTR, length: u32) -> STRPTR {

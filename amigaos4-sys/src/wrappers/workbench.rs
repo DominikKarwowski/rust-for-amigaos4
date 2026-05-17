@@ -7,9 +7,14 @@ use crate::interfaces::workbench::*;
 
 // ---- IWorkbench (WorkbenchIFace) ----
 
+#[cfg(target_arch = "powerpc")]
 extern "C" {
     pub static IWorkbench: *mut WorkbenchIFace;
 }
+
+#[cfg(not(target_arch = "powerpc"))]
+#[allow(non_upper_case_globals)]
+pub static mut IWorkbench: *mut WorkbenchIFace = core::ptr::null_mut();
 
 #[inline]
 pub unsafe fn workbench_update_workbench(name: CONST_STRPTR, lock: u32, action: i32) {
