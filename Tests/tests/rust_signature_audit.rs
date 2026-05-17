@@ -117,6 +117,10 @@ fn parse_wrapper_names(text: &str) -> BTreeSet<String> {
 
 /// Base interface methods inherited from the framework — they exist
 /// in every vtable but the user-facing wrappers never expose them.
+/// Most interfaces declare Expunge/Clone as `_UNIMPLEMENTED` slots
+/// (filtered earlier as `MethodKind::Unimplemented`); some (e.g.
+/// LowLevelIFace) implement them as real entries, which still get
+/// no user-facing wrapper.
 fn is_base_interface_method(name: &str) -> bool {
     matches!(name, "Obtain" | "Release" | "Expunge" | "Clone")
 }
@@ -127,7 +131,8 @@ fn is_base_interface_method(name: &str) -> bool {
 const INTERFACES: &[&str] = &[
     "application", "asl", "commodities", "datatypes", "diskfont", "dos",
     "exec", "gadtools", "graphics", "icon", "iffparse", "intuition",
-    "keymap", "layers", "locale", "rexxsys", "timer", "utility", "workbench",
+    "keymap", "layers", "locale", "lowlevel", "rexxsys", "timer",
+    "utility", "workbench",
 ];
 
 /// One row of the audit table: which wrapper we expected for which

@@ -32,6 +32,8 @@ pub mod keymap;
 pub mod layers;
 #[cfg(feature = "locale")]
 pub mod locale;
+#[cfg(feature = "lowlevel")]
+pub mod lowlevel;
 #[cfg(feature = "rexxsys")]
 pub mod rexxsys;
 #[cfg(feature = "timer")]

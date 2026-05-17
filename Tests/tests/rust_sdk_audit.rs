@@ -54,6 +54,7 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("keymap", "KeymapIFace", None),
     ("layers", "LayersIFace", None),
     ("locale", "LocaleIFace", None),
+    ("lowlevel", "LowLevelIFace", None),
     ("rexxsys", "RexxSysIFace", Some("rexxsyslib")),
     ("timer", "TimerIFace", None),
     ("utility", "UtilityIFace", None),
@@ -63,7 +64,7 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
 /// Base methods inherited from the Interface framework; the SDK header
 /// declares them, but they have no corresponding user-callable wrapper.
 fn is_base_method(name: &str) -> bool {
-    matches!(name, "Obtain" | "Release")
+    matches!(name, "Obtain" | "Release" | "Expunge" | "Clone")
 }
 
 // ── SDK header parser ────────────────────────────────────────
