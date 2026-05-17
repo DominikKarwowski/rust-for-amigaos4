@@ -1,33 +1,96 @@
 # Tests — black-box test suite for rust-for-amigaos4
 
-A standalone Rust crate that verifies project-level invariants from outside
-the three production crates. Sits alongside the in-crate unit tests and
-doctests, and orchestrates them as a single combined run.
+A standalone Rust crate that verifies project-level invariants from
+outside the three production crates. Sits alongside the in-crate unit
+tests and doctests, and orchestrates them as a single combined run.
 
-## What it covers
+## The three sections
 
-| Category | File | What it checks |
-|---|---|---|
-| Build & reproducibility | `tests/repro.rs` | Cargo targets resolve; example/template Makefiles parse; clib4-nightly binaries match submodule HEAD |
-| Public API smoke | `tests/host_amigaos4.rs` | Pure-Rust integration tests of the amigaos4 crate (migrated from `amigaos4/tests/host_tests.rs`). Gated behind `--features link-amigaos4` because the link is Linux-only today (see "Known limitations") |
-| Documentation claims | `tests/doc_claims.rs` | Counts and assertions in README/CLAUDE.md/roadmap match reality (interface count, module count, example count, etc.) |
-| Regression coverage | `tests/regression.rs` | Specific past bugs cannot return silently: `-s` flag in clib4 LDFLAGS, CRLF on LF-declared files, submodule/binary drift, `_start` / `__amigaos4__` symbols present |
+Tests in this suite fall into one of three categories. The category is
+encoded in the test file's filename prefix.
 
-In-source unit tests (`#[cfg(test)] mod tests {}` inside each library's source files) and doctests stay where they are — they exercise private internals and are inherently tied to their source. The runner picks them up by spawning `cargo test` per-crate.
+### 1. `rust_*` — Rust-only
+
+Tests that need a host development environment but never call into the
+AmigaOS runtime. They verify project structure, build infrastructure,
+documentation, and the FFI shape. Always host-runnable.
+
+| File | What it checks |
+|---|---|
+| `tests/rust_repro.rs` | Cargo targets resolve; example/template Makefiles parse; clib4-nightly binaries are present and reasonable; submodule pin matches docs. |
+| `tests/rust_api_smoke.rs` | Public API surface — module declarations, source files, feature flags, `cargo check` matrix. |
+| `tests/rust_doc_claims.rs` | Counts and assertions in README/CLAUDE.md/roadmap match reality. |
+| `tests/rust_regression.rs` | Specific past bugs cannot return silently. |
+| `tests/rust_signature_audit.rs` | Every regular vtable method in the 19 wrappered interfaces has a Rust wrapper with the bindgen-canonical snake_case name; every feature flag has an `interfaces/<name>.rs`. **Fails on any gap** — see gap policy below. |
+
+### 2. `combined_*` — Combined
+
+Tests of pure-Rust logic that is identical on host and PPC: error
+formatting, `Duration` arithmetic, `TagListBuilder` construction, the
+`Read`/`Write` trait contract. Compile-tested on host via `cargo test`;
+the same source could be compiled into a PPC binary and re-run on
+AmigaOS to verify no surprises in the cross-build.
+
+| File | What it checks |
+|---|---|
+| `tests/combined_amigaos4.rs` | The pure-Rust integration tests migrated from `amigaos4/tests/host_tests.rs`. Gated behind the `link-amigaos4` feature (on by default; pass `--no-default-features` to skip). |
+
+### 3. AmigaOS4-only — target-side test harnesses
+
+Tests that require a live AmigaOS runtime (`IExec`, file system,
+intuition, etc.). Today these live as cross-compile projects under
+`examples/test-harness*/`. They build with `./build.sh` and run on
+AmigaOS 4 (QEMU or real hardware). The Tests/ orchestrator does **not**
+build or run them — that requires Docker + QEMU. Driving them is a
+future addition; for now they're invoked manually.
+
+| Example | What it exercises |
+|---|---|
+| `examples/test-harness` | Core OS-call tests: `Vec`, `String`, `TagList`, `AmigaVec`, `MsgPort`, `Duration`, file I/O, env, timer, clipboard. |
+| `examples/test-harness-gui` | ReAction window/gadget tests on the actual Intuition framework. |
+| `examples/test-harness-net` | Real TCP/DNS/HTTP against the AmigaOS networking stack. |
+
+## SDK coverage policy
+
+> All AmigaOS 4 SDK methods/functions implemented in Rust must be
+> covered by the test suite.
+
+This is enforced by `rust_signature_audit.rs`:
+
+* For every regular method in each of the 19 vtable structs in
+  `amigaos4-sys/src/interfaces/<name>.rs`, the audit requires a
+  matching wrapper in `amigaos4-sys/src/wrappers/<name>.rs` with the
+  bindgen-canonical snake_case name.
+* `Obtain` / `Release` and `*_UNIMPLEMENTED` slots are skipped — they
+  are framework-managed and have no Rust wrappers.
+* Varargs slots (typed as `APTR`) are skipped — they are wrapped via C
+  glue in `amigaos4-sys/glue/amiga_glue.c`, not Rust.
+* For every feature flag in `amigaos4-sys/Cargo.toml`, the audit
+  requires a matching `interfaces/<name>.rs`. Catches "feature added
+  but bindings forgotten" and the reverse.
+
+**Gap policy: fail the build.** Any missing wrapper or orphaned
+interface file fails the test, surfacing the gap on the next CI run.
 
 ## Running
 
 ```bash
-# Everything that runs on this host
+# Everything host-runnable (Rust-only + combined + per-crate in-source tests)
 cargo run --bin amiga-test-runner
 
 # Just the Tests/ own integration tests
 cargo test
 
-# Including the migrated amigaos4 host tests (Linux/CI only — see below)
-cargo test --features link-amigaos4
+# Excluding the migrated amigaos4 host tests (if amigaos4 doesn't link)
+cargo test --no-default-features
+
+# A single category
+cargo test --test rust_signature_audit
 ```
 
-## Known limitations
+## In-source tests stay put
 
-**No QEMU layer**: Target-side test harnesses (`examples/test-harness*`) are still cross-compiled to PowerPC and intended to be run on QEMU or real hardware. The Tests/ orchestrator does not drive QEMU today.
+`#[cfg(test)] mod tests {}` blocks inside each library's source files
+and doctests in `///` doc comments remain where they are — they
+exercise private internals and are inherently tied to their source.
+The orchestrator picks them up by spawning `cargo test` per crate.
