@@ -42,6 +42,16 @@ pub mod filler;
 pub mod fuelgauge;
 #[cfg(feature = "gadtools")]
 pub mod gadtools;
+#[cfg(feature = "getcolor")]
+pub mod getcolor;
+#[cfg(feature = "getfile")]
+pub mod getfile;
+#[cfg(feature = "getfont")]
+pub mod getfont;
+#[cfg(feature = "getscreenmode")]
+pub mod getscreenmode;
+#[cfg(feature = "glyph")]
+pub mod glyph;
 #[cfg(feature = "graphics")]
 pub mod graphics;
 #[cfg(feature = "hunk")]
