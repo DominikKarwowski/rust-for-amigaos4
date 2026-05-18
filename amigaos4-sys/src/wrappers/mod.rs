@@ -38,6 +38,8 @@ pub mod lowlevel;
 pub mod misc;
 #[cfg(feature = "popupmenu")]
 pub mod popupmenu;
+#[cfg(feature = "realtime")]
+pub mod realtime;
 #[cfg(feature = "rexxsys")]
 pub mod rexxsys;
 #[cfg(feature = "timer")]

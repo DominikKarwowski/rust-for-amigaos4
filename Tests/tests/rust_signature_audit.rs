@@ -132,7 +132,7 @@ const INTERFACES: &[&str] = &[
     "application", "asl", "commodities", "datatypes", "diskfont", "dos",
     "exec", "gadtools", "graphics", "icon", "iffparse", "intuition",
     "keymap", "layers", "locale", "lowlevel", "misc", "popupmenu",
-    "rexxsys", "timer", "utility", "version", "workbench",
+    "realtime", "rexxsys", "timer", "utility", "version", "workbench",
 ];
 
 /// One row of the audit table: which wrapper we expected for which
