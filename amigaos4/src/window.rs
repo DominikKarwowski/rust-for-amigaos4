@@ -61,10 +61,15 @@ pub const IDCMP_INTUITICKS: u32 = 0x0040_0000;
 
 // ---------------------------------------------------------------------------
 // Window attribute tags (intuition/intuition.h)
-// WA_Dummy = TAG_USER + 0x10000 = 0x8001_0000
+// WA_Dummy = TAG_USER + 99 = 0x8000_0063 (per intuition.h:1387). An
+// earlier version of this binding used TAG_USER + 0x10000, which made
+// every WA_* tag a different ID than the SDK actually defines — so
+// OpenWindowTagList silently ignored size/position/IDCMP and opened a
+// VISITOR window at screen size with no UserPort, and any subsequent
+// GetMsg call dereferenced a NULL UserPort.
 // ---------------------------------------------------------------------------
 
-const WA_DUMMY: u32 = TAG_USER + 0x10000;
+const WA_DUMMY: u32 = TAG_USER + 99;
 
 /// Window left edge position.
 pub const WA_LEFT: u32 = WA_DUMMY + 0x01;
@@ -84,56 +89,58 @@ pub const WA_IDCMP: u32 = WA_DUMMY + 0x07;
 pub const WA_FLAGS: u32 = WA_DUMMY + 0x08;
 /// Pointer to first gadget in chain.
 pub const WA_GADGETS: u32 = WA_DUMMY + 0x09;
+/// Checkmark image pointer for menu items.
+pub const WA_CHECKMARK: u32 = WA_DUMMY + 0x0A;
 /// Window title string (null-terminated).
-pub const WA_TITLE: u32 = WA_DUMMY + 0x0A;
+pub const WA_TITLE: u32 = WA_DUMMY + 0x0B;
 /// Screen title displayed when window is active.
-pub const WA_SCREEN_TITLE: u32 = WA_DUMMY + 0x0B;
+pub const WA_SCREEN_TITLE: u32 = WA_DUMMY + 0x0C;
 /// Open on a custom screen (pointer).
-pub const WA_CUSTOM_SCREEN: u32 = WA_DUMMY + 0x0C;
+pub const WA_CUSTOM_SCREEN: u32 = WA_DUMMY + 0x0D;
 /// Super bitmap pointer for WFLG_SUPER_BITMAP windows.
-pub const WA_SUPER_BITMAP: u32 = WA_DUMMY + 0x0D;
+pub const WA_SUPER_BITMAP: u32 = WA_DUMMY + 0x0E;
 /// Minimum window width.
-pub const WA_MIN_WIDTH: u32 = WA_DUMMY + 0x0E;
+pub const WA_MIN_WIDTH: u32 = WA_DUMMY + 0x0F;
 /// Minimum window height.
-pub const WA_MIN_HEIGHT: u32 = WA_DUMMY + 0x0F;
+pub const WA_MIN_HEIGHT: u32 = WA_DUMMY + 0x10;
 /// Maximum window width.
-pub const WA_MAX_WIDTH: u32 = WA_DUMMY + 0x10;
+pub const WA_MAX_WIDTH: u32 = WA_DUMMY + 0x11;
 /// Maximum window height.
-pub const WA_MAX_HEIGHT: u32 = WA_DUMMY + 0x11;
+pub const WA_MAX_HEIGHT: u32 = WA_DUMMY + 0x12;
 /// Inner (client area) width in pixels.
-pub const WA_INNER_WIDTH: u32 = WA_DUMMY + 0x12;
+pub const WA_INNER_WIDTH: u32 = WA_DUMMY + 0x13;
 /// Inner (client area) height in pixels.
-pub const WA_INNER_HEIGHT: u32 = WA_DUMMY + 0x13;
-/// Open on a public screen (pointer).
-pub const WA_PUB_SCREEN: u32 = WA_DUMMY + 0x14;
+pub const WA_INNER_HEIGHT: u32 = WA_DUMMY + 0x14;
 /// Public screen name string (null-terminated).
 pub const WA_PUB_SCREEN_NAME: u32 = WA_DUMMY + 0x15;
+/// Open on a public screen (pointer).
+pub const WA_PUB_SCREEN: u32 = WA_DUMMY + 0x16;
 /// Fall back to default screen if named screen unavailable.
-pub const WA_PUB_SCREEN_FALLBACK: u32 = WA_DUMMY + 0x16;
+pub const WA_PUB_SCREEN_FALLBACK: u32 = WA_DUMMY + 0x17;
 /// Enable the sizing gadget. Alias for [`WA_SIZE_GADGET`].
-pub const WA_SIZING: u32 = WA_DUMMY + 0x17;
+pub const WA_SIZING: u32 = WA_DUMMY + 0x1E;
 /// Enable the sizing gadget.
-pub const WA_SIZE_GADGET: u32 = WA_DUMMY + 0x17;
+pub const WA_SIZE_GADGET: u32 = WA_DUMMY + 0x1E;
 /// Enable the drag bar (title bar).
-pub const WA_DRAG_BAR: u32 = WA_DUMMY + 0x18;
+pub const WA_DRAG_BAR: u32 = WA_DUMMY + 0x1F;
 /// Enable the depth (front/back) gadget.
-pub const WA_DEPTH_GADGET: u32 = WA_DUMMY + 0x19;
+pub const WA_DEPTH_GADGET: u32 = WA_DUMMY + 0x20;
 /// Enable the close gadget.
-pub const WA_CLOSE_GADGET: u32 = WA_DUMMY + 0x1A;
+pub const WA_CLOSE_GADGET: u32 = WA_DUMMY + 0x21;
 /// Open as a backdrop window (behind all others).
-pub const WA_BACKDROP: u32 = WA_DUMMY + 0x1B;
+pub const WA_BACKDROP: u32 = WA_DUMMY + 0x22;
 /// Open without window borders.
-pub const WA_BORDERLESS: u32 = WA_DUMMY + 0x1C;
+pub const WA_BORDERLESS: u32 = WA_DUMMY + 0x25;
 /// Activate the window immediately on open.
-pub const WA_ACTIVATE: u32 = WA_DUMMY + 0x1D;
+pub const WA_ACTIVATE: u32 = WA_DUMMY + 0x26;
 /// Trap right mouse button events (suppress menu).
-pub const WA_RMBTRAP: u32 = WA_DUMMY + 0x1E;
+pub const WA_RMBTRAP: u32 = WA_DUMMY + 0x27;
 /// Use simple refresh mode.
-pub const WA_SIMPLE_REFRESH: u32 = WA_DUMMY + 0x1F;
+pub const WA_SIMPLE_REFRESH: u32 = WA_DUMMY + 0x29;
 /// Use smart refresh mode.
-pub const WA_SMART_REFRESH: u32 = WA_DUMMY + 0x20;
+pub const WA_SMART_REFRESH: u32 = WA_DUMMY + 0x2A;
 /// Request a GimmeZeroZero inner region.
-pub const WA_GIMME_ZERO_ZERO: u32 = WA_DUMMY + 0x23;
+pub const WA_GIMME_ZERO_ZERO: u32 = WA_DUMMY + 0x2E;
 
 // ---------------------------------------------------------------------------
 // Raw IntuiMessage partial layout for reading IDCMP fields.
@@ -432,7 +439,8 @@ mod tests {
 
     #[test]
     fn wa_dummy_base() {
-        assert_eq!(WA_DUMMY, TAG_USER + 0x10000);
+        assert_eq!(WA_DUMMY, TAG_USER + 99);
+        assert_eq!(WA_DUMMY, 0x8000_0063);
     }
 
     #[test]
