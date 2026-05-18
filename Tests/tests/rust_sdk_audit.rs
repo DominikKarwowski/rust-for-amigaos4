@@ -67,6 +67,7 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("layout", "LayoutIFace", None),
     ("locale", "LocaleIFace", None),
     ("lowlevel", "LowLevelIFace", None),
+    ("lzma", "LZMAIFace", None),
     ("misc", "MiscIFace", None),
     ("palette", "PaletteIFace", None),
     ("penmap", "PenMapIFace", None),
@@ -121,66 +122,75 @@ fn extract_struct_body<'a>(text: &'a str, struct_name: &str) -> &'a str {
     &text[start..end]
 }
 
-/// Parse the SDK struct body for vtable method names. Format varies
-/// slightly: both `RetType APICALL (*Name)(...)` and `APICALL RetType
-/// (*Name)(...)` appear across the SDK. Varargs methods end with
-/// `, ...)` in the argument list (track via balanced paren scan).
+/// Parse the SDK struct body for vtable method names.
+///
+/// Anchors on the function-pointer syntax `(*Name)(args)` rather than
+/// the `APICALL` keyword. Most SDK headers attach APICALL to every
+/// method, but a few (notably `lzma.h`) omit it — those methods expose
+/// a standard-C ABI library directly and don't use the AmigaOS
+/// calling convention. Walking the bytes directly catches both.
+///
+/// Method declarations live at struct-body depth 0; the `(*Name)` may
+/// also appear inside an argument list (e.g. `void (*PutChProc)()` as
+/// an argument to RawDoFmt) and must be ignored — paren depth tracking
+/// handles that.
 fn parse_sdk_methods(body: &str) -> Methods {
     let mut out = Methods::default();
     let bytes = body.as_bytes();
-    let pat = b"APICALL";
+    let mut depth: i32 = 0;
     let mut i = 0;
-    while i + pat.len() <= bytes.len() {
-        if &bytes[i..i + pat.len()] != pat { i += 1; continue; }
-        let mut j = i + pat.len();
-        // Find `(*Name)`.
-        while j < bytes.len() && bytes[j] != b'(' { j += 1; }
-        if j >= bytes.len() { break; }
-        // Must be `(*` — otherwise this APICALL token is in a comment
-        // or something else.
-        if j + 1 >= bytes.len() || bytes[j + 1] != b'*' { i = j; continue; }
-        let name_start = j + 2;
-        let mut name_end = name_start;
-        while name_end < bytes.len() &&
-              (bytes[name_end].is_ascii_alphanumeric() || bytes[name_end] == b'_') {
-            name_end += 1;
-        }
-        if name_end == name_start { i = name_end; continue; }
-        let name = std::str::from_utf8(&bytes[name_start..name_end])
-            .unwrap_or("").to_string();
-        // Skip the closing `)` of `(*Name)`.
-        if name_end >= bytes.len() || bytes[name_end] != b')' { i = name_end; continue; }
-        let args_start = name_end + 1;
-        // Walk balanced parens to find the arg-list close.
-        let mut depth = 0;
-        let mut k = args_start;
-        let mut args_open = None;
-        while k < bytes.len() {
-            match bytes[k] {
-                b'(' => {
-                    depth += 1;
-                    if depth == 1 { args_open = Some(k + 1); }
-                }
-                b')' => {
-                    depth -= 1;
-                    if depth == 0 { break; }
-                }
-                _ => {}
+    while i < bytes.len() {
+        let c = bytes[i];
+        if c == b'(' && depth == 0 && i + 1 < bytes.len() && bytes[i + 1] == b'*' {
+            // Try to parse `(*Name)(args)`. Extract Name.
+            let name_start = i + 2;
+            let mut name_end = name_start;
+            while name_end < bytes.len() &&
+                  (bytes[name_end].is_ascii_alphanumeric() || bytes[name_end] == b'_') {
+                name_end += 1;
             }
-            k += 1;
+            if name_end > name_start &&
+               name_end < bytes.len() && bytes[name_end] == b')' {
+                // Skip whitespace between `)` and the args `(`.
+                let mut k = name_end + 1;
+                while k < bytes.len() && bytes[k].is_ascii_whitespace() { k += 1; }
+                if k < bytes.len() && bytes[k] == b'(' {
+                    // This is a method declaration. Walk args with
+                    // balanced parens to find the closing `)` and
+                    // detect varargs.
+                    let args_open = k + 1;
+                    let mut arg_depth = 1;
+                    let mut m = args_open;
+                    while m < bytes.len() && arg_depth > 0 {
+                        match bytes[m] {
+                            b'(' => arg_depth += 1,
+                            b')' => arg_depth -= 1,
+                            _ => {}
+                        }
+                        if arg_depth > 0 { m += 1; }
+                    }
+                    if arg_depth == 0 {
+                        let args = std::str::from_utf8(&bytes[args_open..m])
+                            .unwrap_or("");
+                        let name = std::str::from_utf8(&bytes[name_start..name_end])
+                            .unwrap_or("").to_string();
+                        if args.contains("...") {
+                            out.varargs.insert(name);
+                        } else {
+                            out.regular.insert(name);
+                        }
+                        i = m + 1;
+                        continue;
+                    }
+                }
+            }
         }
-        if depth != 0 { i = args_start; continue; }
-        let args = if let Some(a) = args_open {
-            std::str::from_utf8(&bytes[a..k]).unwrap_or("")
-        } else { "" };
-
-        if args.contains("...") {
-            out.varargs.insert(name);
-        } else {
-            out.regular.insert(name);
+        match c {
+            b'(' => depth += 1,
+            b')' => depth -= 1,
+            _ => {}
         }
-
-        i = k + 1;
+        i += 1;
     }
     out
 }
@@ -336,6 +346,31 @@ struct Foo {
 }
 
 #[test]
+fn sdk_parser_handles_methods_without_apicall() {
+    // lzma.h-style: every lzma_* method-pointer omits APICALL because
+    // it exposes liblzma's plain C ABI. Only the framework methods
+    // (Obtain/Release/Expunge/Clone) keep APICALL.
+    let text = r#"
+struct Foo {
+    struct InterfaceData Data;
+
+    uint32 APICALL (*Obtain)(struct Foo *Self);
+    void APICALL (*Release)(struct Foo *Self);
+    lzma_ret (*lzma_code)(lzma_stream *strm, lzma_action action);
+    void (*lzma_end)(lzma_stream *strm);
+    uint64_t (*lzma_memusage)(const lzma_stream *strm);
+};
+"#;
+    let m = parse_sdk_methods(extract_struct_body(text, "Foo"));
+    assert!(m.regular.contains("Obtain"));
+    assert!(m.regular.contains("Release"));
+    assert!(m.regular.contains("lzma_code"),
+        "non-APICALL method `lzma_code` should be parsed");
+    assert!(m.regular.contains("lzma_end"));
+    assert!(m.regular.contains("lzma_memusage"));
+}
+
+#[test]
 fn sdk_parser_handles_nested_parens_in_args() {
     // RawDoFmt has a function-pointer argument with its own parens.
     let text = r#"
@@ -346,4 +381,6 @@ struct Foo {
     let m = parse_sdk_methods(extract_struct_body(text, "Foo"));
     assert!(m.regular.contains("RawDoFmt"),
         "RawDoFmt should be parsed despite nested parens in its arg list");
+    assert!(!m.regular.contains("PutChProc"),
+        "the inner fn-pointer arg `PutChProc` must NOT be treated as a method");
 }
