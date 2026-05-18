@@ -156,6 +156,7 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("utility", "UtilityIFace", None),
     ("version", "VersionIFace", None),
     ("virtual_gc", "VirtualIFace", Some("virtual")),
+    ("warp3d", "Warp3DIFace", None),
     ("window", "WindowIFace", None),
     ("workbench", "WorkbenchIFace", Some("wb")),
     ("xadmaster", "XadMasterIFace", None),

@@ -154,14 +154,14 @@ const INTERFACES: &[&str] = &[
     "getfont", "getscreenmode", "glyph", "graphics", "hunk", "i2c",
     "i2c_resource", "icon", "iconmodule", "iffparse", "input", "integer",
     "intuition", "keymap", "label", "language", "layers", "layout", "listbrowser",
-    "locale", "lowlevel", "misc", "mmu", "mounter", "mounter_private",
+    "locale", "lowlevel", "lzma", "misc", "mmu", "mounter", "mounter_private",
     "nv", "openfirmware", "p96", "palette", "partition", "pasdma", "pci", "penmap",
     "perfmon", "picture", "popupmenu", "potgo", "prefs_objects",
     "radiobutton", "ramdrive", "realtime", "requester",
     "resource", "rexxsys", "screenblanker", "scroller", "sketchboard",
     "slider", "space", "speedbar", "string_gc", "textclip", "texteditor",
     "timer", "timesync", "timezone", "usbfd", "usbhcd", "usbresource", "usbsys",
-    "utility", "version", "virtual_gc", "window", "workbench",
+    "utility", "version", "virtual_gc", "warp3d", "window", "workbench",
     "xadmaster", "xena", "z",
 ];
 

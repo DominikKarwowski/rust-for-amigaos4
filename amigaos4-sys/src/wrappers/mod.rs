@@ -160,6 +160,8 @@ pub mod listbrowser;
 pub mod locale;
 #[cfg(feature = "lowlevel")]
 pub mod lowlevel;
+#[cfg(feature = "lzma")]
+pub mod lzma;
 #[cfg(feature = "misc")]
 pub mod misc;
 #[cfg(feature = "mmu")]
@@ -246,6 +248,8 @@ pub mod utility;
 pub mod version;
 #[cfg(feature = "virtual_gc")]
 pub mod virtual_gc;
+#[cfg(feature = "warp3d")]
+pub mod warp3d;
 #[cfg(feature = "window")]
 pub mod window;
 #[cfg(feature = "workbench")]
