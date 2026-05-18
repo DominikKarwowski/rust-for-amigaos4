@@ -68,6 +68,8 @@ pub mod cw3_keyboard;
 pub mod cw3_sid;
 #[cfg(feature = "cyrus")]
 pub mod cyrus;
+#[cfg(feature = "charset")]
+pub mod charset;
 #[cfg(feature = "datatypes")]
 pub mod datatypes;
 #[cfg(feature = "datebrowser")]
@@ -138,6 +140,8 @@ pub mod intuition;
 pub mod keymap;
 #[cfg(feature = "label")]
 pub mod label;
+#[cfg(feature = "language")]
+pub mod language;
 #[cfg(feature = "layers")]
 pub mod layers;
 #[cfg(feature = "layout")]
@@ -158,10 +162,14 @@ pub mod mounter;
 pub mod mounter_private;
 #[cfg(feature = "nv")]
 pub mod nv;
+#[cfg(feature = "openfirmware")]
+pub mod openfirmware;
 #[cfg(feature = "palette")]
 pub mod palette;
 #[cfg(feature = "partition")]
 pub mod partition;
+#[cfg(feature = "pasdma")]
+pub mod pasdma;
 #[cfg(feature = "pci")]
 pub mod pci;
 #[cfg(feature = "penmap")]
@@ -174,6 +182,8 @@ pub mod picture;
 pub mod popupmenu;
 #[cfg(feature = "potgo")]
 pub mod potgo;
+#[cfg(feature = "prefs_objects")]
+pub mod prefs_objects;
 #[cfg(feature = "radiobutton")]
 pub mod radiobutton;
 #[cfg(feature = "ramdrive")]
