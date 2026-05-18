@@ -486,8 +486,12 @@ fn test_read_to_vec_4kb() -> bool {
 // ---------------------------------------------------------------------------
 
 fn test_env_var_existing() -> bool {
-    // PATH is typically set on AmigaOS
-    match env::var(b"PATH\0") {
+    // AmigaOS doesn't have a Unix-style PATH variable — Path is a
+    // per-CLI list and lookup happens via Assigns (C:, LIBS:, …).
+    // `Workbench` is set as a global ENV var at boot to the WB
+    // version string (e.g. "53.21") and is reliably present on every
+    // installed AmigaOS 4 image.
+    match env::var(b"Workbench\0") {
         Some(val) => !val.is_empty(),
         None => false,
     }
