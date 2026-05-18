@@ -4,6 +4,8 @@
 
 #[cfg(feature = "acpi")]
 pub mod acpi;
+#[cfg(feature = "ahi")]
+pub mod ahi;
 #[cfg(feature = "ahisub")]
 pub mod ahisub;
 #[cfg(feature = "amigaguide")]
@@ -240,3 +242,5 @@ pub mod window;
 pub mod workbench;
 #[cfg(feature = "xena")]
 pub mod xena;
+#[cfg(feature = "z")]
+pub mod z;

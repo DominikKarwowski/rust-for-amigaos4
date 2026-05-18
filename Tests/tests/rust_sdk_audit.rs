@@ -41,6 +41,7 @@ fn sdk_interfaces_dir() -> Option<PathBuf> {
 const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("acpi", "ACPIIFace", None),
     ("ahisub", "AHIsubIFace", Some("ahi_sub")),
+    ("ahi", "AHIIFace", None),
     ("amigaguide", "AmigaGuideIFace", None),
     ("amigainput", "AIN_IFace", None),
     ("amisslmaster", "AmiSSLMasterIFace", None),
@@ -149,6 +150,7 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("window", "WindowIFace", None),
     ("workbench", "WorkbenchIFace", Some("wb")),
     ("xena", "XenaIFace", None),
+    ("z", "ZIFace", None),
 ];
 
 /// Base methods inherited from the Interface framework, plus
