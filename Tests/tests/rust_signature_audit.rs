@@ -142,13 +142,14 @@ fn is_base_interface_method(name: &str) -> bool {
 /// inside the wrapper file).
 const INTERFACES: &[&str] = &[
     "application", "asl", "bevel", "bullet", "button", "checkbox", "chooser",
-    "clicktab", "colorwheel", "commodities", "console", "datatypes",
+    "cia", "clicktab", "colorwheel", "commodities", "console", "datatypes",
     "datebrowser", "diskfont", "dos", "exec", "filler", "fuelgauge",
     "gadtools", "graphics", "hunk", "icon", "iffparse", "input", "integer",
-    "intuition", "keymap", "label", "layers", "layout", "locale", "lowlevel",
-    "misc", "nv", "palette", "penmap", "picture", "popupmenu", "radiobutton",
-    "realtime", "requester", "resource", "rexxsys", "scroller", "slider",
-    "space", "speedbar", "texteditor", "timer", "timezone", "utility",
+    "intuition", "keymap", "label", "layers", "layout", "listbrowser",
+    "locale", "lowlevel", "misc", "mounter", "nv", "palette", "penmap",
+    "picture", "popupmenu", "radiobutton", "realtime", "requester",
+    "resource", "rexxsys", "scroller", "slider", "space", "speedbar",
+    "textclip", "texteditor", "timer", "timesync", "timezone", "utility",
     "version", "workbench",
 ];
 
