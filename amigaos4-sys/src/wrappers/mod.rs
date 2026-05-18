@@ -4,6 +4,8 @@
 
 #[cfg(feature = "acpi")]
 pub mod acpi;
+#[cfg(feature = "ahisub")]
+pub mod ahisub;
 #[cfg(feature = "amigaguide")]
 pub mod amigaguide;
 #[cfg(feature = "amigainput")]
@@ -74,6 +76,8 @@ pub mod diskio;
 pub mod dos;
 #[cfg(feature = "drawlist")]
 pub mod drawlist;
+#[cfg(feature = "dtclass")]
+pub mod dtclass;
 #[cfg(feature = "elf")]
 pub mod elf;
 #[cfg(feature = "exec")]
@@ -106,6 +110,8 @@ pub mod graphics;
 pub mod hunk;
 #[cfg(feature = "i2c")]
 pub mod i2c;
+#[cfg(feature = "i2c_resource")]
+pub mod i2c_resource;
 #[cfg(feature = "icon")]
 pub mod icon;
 #[cfg(feature = "iconmodule")]
@@ -138,6 +144,8 @@ pub mod misc;
 pub mod mmu;
 #[cfg(feature = "mounter")]
 pub mod mounter;
+#[cfg(feature = "mounter_private")]
+pub mod mounter_private;
 #[cfg(feature = "nv")]
 pub mod nv;
 #[cfg(feature = "palette")]
@@ -198,6 +206,8 @@ pub mod timezone;
 pub mod usbfd;
 #[cfg(feature = "usbhcd")]
 pub mod usbhcd;
+#[cfg(feature = "usbresource")]
+pub mod usbresource;
 #[cfg(feature = "utility")]
 pub mod utility;
 #[cfg(feature = "version")]
