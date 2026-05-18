@@ -155,7 +155,7 @@ const INTERFACES: &[&str] = &[
     "i2c_resource", "icon", "iconmodule", "iffparse", "input", "integer",
     "intuition", "keymap", "label", "language", "layers", "layout", "listbrowser",
     "locale", "lowlevel", "misc", "mmu", "mounter", "mounter_private",
-    "nv", "openfirmware", "palette", "partition", "pasdma", "pci", "penmap",
+    "nv", "openfirmware", "p96", "palette", "partition", "pasdma", "pci", "penmap",
     "perfmon", "picture", "popupmenu", "potgo", "prefs_objects",
     "radiobutton", "ramdrive", "realtime", "requester",
     "resource", "rexxsys", "screenblanker", "scroller", "sketchboard",

@@ -174,6 +174,8 @@ pub mod openfirmware;
 pub mod palette;
 #[cfg(feature = "partition")]
 pub mod partition;
+#[cfg(feature = "p96")]
+pub mod p96;
 #[cfg(feature = "pasdma")]
 pub mod pasdma;
 #[cfg(feature = "pci")]
