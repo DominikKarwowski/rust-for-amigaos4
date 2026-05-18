@@ -49,6 +49,7 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("bootsd", "BootSDIFace", None),
     ("bullet", "BulletIFace", None),
     ("button", "ButtonIFace", None),
+    ("bzip2", "BZip2IFace", None),
     ("checkbox", "CheckBoxIFace", None),
     ("chooser", "ChooserIFace", None),
     ("cia", "CIAIFace", None),
@@ -62,6 +63,7 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("diffview", "DiffViewIFace", None),
     ("diskfont", "DiskfontIFace", None),
     ("diskio", "DiskIOIFace", None),
+    ("docky", "DockyIFace", None),
     ("dos", "DOSIFace", None),
     ("drawlist", "DrawListIFace", None),
     ("exec", "ExecIFace", None),
@@ -102,6 +104,7 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("penmap", "PenMapIFace", None),
     ("picture", "PictureIFace", None),
     ("popupmenu", "PopupMenuIFace", None),
+    ("potgo", "PotgoIFace", None),
     ("radiobutton", "RadioButtonIFace", None),
     ("realtime", "RealTimeIFace", None),
     ("requester", "RequesterIFace", None),
@@ -119,10 +122,12 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("timer", "TimerIFace", None),
     ("timesync", "TimesyncIFace", None),
     ("timezone", "TimezoneIFace", None),
+    ("usbfd", "USBFDIFace", None),
     ("utility", "UtilityIFace", None),
     ("version", "VersionIFace", None),
     ("window", "WindowIFace", None),
     ("workbench", "WorkbenchIFace", Some("wb")),
+    ("xena", "XenaIFace", None),
 ];
 
 /// Base methods inherited from the Interface framework, plus

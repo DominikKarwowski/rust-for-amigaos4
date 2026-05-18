@@ -22,6 +22,8 @@ pub mod bootsd;
 pub mod bullet;
 #[cfg(feature = "button")]
 pub mod button;
+#[cfg(feature = "bzip2")]
+pub mod bzip2;
 #[cfg(feature = "checkbox")]
 pub mod checkbox;
 #[cfg(feature = "chooser")]
@@ -44,6 +46,8 @@ pub mod datebrowser;
 pub mod debug;
 #[cfg(feature = "diffview")]
 pub mod diffview;
+#[cfg(feature = "docky")]
+pub mod docky;
 #[cfg(feature = "diskfont")]
 pub mod diskfont;
 #[cfg(feature = "diskio")]
@@ -126,6 +130,8 @@ pub mod penmap;
 pub mod picture;
 #[cfg(feature = "popupmenu")]
 pub mod popupmenu;
+#[cfg(feature = "potgo")]
+pub mod potgo;
 #[cfg(feature = "radiobutton")]
 pub mod radiobutton;
 #[cfg(feature = "realtime")]
@@ -162,6 +168,8 @@ pub mod timer;
 pub mod timesync;
 #[cfg(feature = "timezone")]
 pub mod timezone;
+#[cfg(feature = "usbfd")]
+pub mod usbfd;
 #[cfg(feature = "utility")]
 pub mod utility;
 #[cfg(feature = "version")]
@@ -170,3 +178,5 @@ pub mod version;
 pub mod window;
 #[cfg(feature = "workbench")]
 pub mod workbench;
+#[cfg(feature = "xena")]
+pub mod xena;
