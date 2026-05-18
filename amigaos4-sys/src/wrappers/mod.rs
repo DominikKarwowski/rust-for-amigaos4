@@ -8,12 +8,18 @@ pub mod application;
 pub mod asl;
 #[cfg(feature = "bevel")]
 pub mod bevel;
+#[cfg(feature = "bullet")]
+pub mod bullet;
 #[cfg(feature = "button")]
 pub mod button;
 #[cfg(feature = "checkbox")]
 pub mod checkbox;
 #[cfg(feature = "chooser")]
 pub mod chooser;
+#[cfg(feature = "clicktab")]
+pub mod clicktab;
+#[cfg(feature = "colorwheel")]
+pub mod colorwheel;
 #[cfg(feature = "commodities")]
 pub mod commodities;
 #[cfg(feature = "datatypes")]
@@ -46,6 +52,8 @@ pub mod keymap;
 pub mod label;
 #[cfg(feature = "layers")]
 pub mod layers;
+#[cfg(feature = "layout")]
+pub mod layout;
 #[cfg(feature = "locale")]
 pub mod locale;
 #[cfg(feature = "lowlevel")]
@@ -60,6 +68,8 @@ pub mod penmap;
 pub mod popupmenu;
 #[cfg(feature = "realtime")]
 pub mod realtime;
+#[cfg(feature = "requester")]
+pub mod requester;
 #[cfg(feature = "rexxsys")]
 pub mod rexxsys;
 #[cfg(feature = "scroller")]
