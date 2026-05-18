@@ -70,6 +70,8 @@ pub mod cw3_gameport;
 pub mod cw3_keyboard;
 #[cfg(feature = "cw3_sid")]
 pub mod cw3_sid;
+#[cfg(feature = "cybergfx")]
+pub mod cybergfx;
 #[cfg(feature = "cyrus")]
 pub mod cyrus;
 #[cfg(feature = "charset")]

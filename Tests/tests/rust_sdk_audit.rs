@@ -69,6 +69,7 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("colorwheel", "ColorWheelIFace", None),
     ("commodities", "CommoditiesIFace", None),
     ("console", "ConsoleIFace", None),
+    ("cybergfx", "CyberGfxIFace", Some("cybergraphics")),
     ("cyrus", "CyrusIFace", None),
     ("datatypes", "DataTypesIFace", None),
     ("datebrowser", "DateBrowserIFace", None),
