@@ -44,6 +44,7 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("bevel", "BevelIFace", None),
     ("button", "ButtonIFace", None),
     ("checkbox", "CheckBoxIFace", None),
+    ("chooser", "ChooserIFace", None),
     ("commodities", "CommoditiesIFace", None),
     ("datatypes", "DataTypesIFace", None),
     ("diskfont", "DiskfontIFace", None),

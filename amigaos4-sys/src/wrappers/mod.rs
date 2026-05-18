@@ -12,6 +12,8 @@ pub mod bevel;
 pub mod button;
 #[cfg(feature = "checkbox")]
 pub mod checkbox;
+#[cfg(feature = "chooser")]
+pub mod chooser;
 #[cfg(feature = "commodities")]
 pub mod commodities;
 #[cfg(feature = "datatypes")]
