@@ -32,20 +32,26 @@ jobs:
       - name: Rust version
         run: rustc --version && cargo --version
 
-      # ── Fake linker ──────────────────────────────────────────────
-      # The target spec references fake-linker.bat (Windows).
-      # On Linux CI we need fake-linker.sh — make it executable and
-      # patch every powerpc-amigaos.json to point to it.
-      - name: Prepare fake linker for Linux
-        run: |
-          find . -name 'fake-linker.sh' -exec chmod +x {} +
-          find . -name 'powerpc-amigaos.json' -exec \
-            sed -i 's|"linker": "fake-linker.bat"|"linker": "./fake-linker.sh"|' {} +
+      # ── PPC link toolchain (Docker) ──────────────────────────────
+      # The walkero image carries ppc-amigaos-gcc 11 plus the OS4 SDK
+      # and is what build.sh shells out to. Pre-pull so each example's
+      # `docker run` is a cache hit. The image is ~2.5 GB compressed
+      # but doesn't change often.
+      - name: Pull ppc-amigaos GCC Docker image
+        run: docker pull walkero/amigagccondocker:os4-gcc11
 
-      # ── Library crates (cross-compiled to PPC) ───────────────────
+      # Git stores these without +x on a Windows checkout; CI needs them
+      # executable to run as shebang scripts.
+      - name: Make build.sh and fake-linkers executable
+        run: |
+          chmod +x build.sh
+          find . -name 'fake-linker.sh' -exec chmod +x {} +
+
+      # ── Library crates (cross-compiled to PPC, no link step) ─────
       # These have no Cargo.toml of their own that sets up build-std;
       # build them as dependencies by using an example project's
       # .cargo/config.toml which enables build-std + json-target-spec.
+      # They produce rlibs/staticlibs only — no Docker link needed.
       - name: Build amigaos4-sys (PPC)
         working-directory: examples/hello
         run: cargo build --release -p amigaos4-sys
@@ -58,54 +64,75 @@ jobs:
         working-directory: examples/hello
         run: cargo build --release -p amigaos4
 
-      # ── Example projects (cross-compiled to PPC) ─────────────────
-      - name: Build examples/hello (PPC)
-        working-directory: examples/hello
-        run: cargo build --release
+      # ── Example projects (cargo staticlib + Docker link → ELF) ───
+      # build.sh runs `cargo build --release` on the host, then shells
+      # into the walkero Docker image to link the Rust staticlib + C
+      # glue into the final PPC executable. The clib4-nightly overlay
+      # is dropped into the image's SDK so app-mode examples link
+      # against the same clib4 the project ships.
+      - name: Build examples/hello (link to ELF)
+        run: ./build.sh examples/hello
 
-      - name: Build examples/hello-driver (PPC)
-        working-directory: examples/hello-driver
-        run: cargo build --release
+      - name: Build examples/hello-driver (link to ELF)
+        run: ./build.sh examples/hello-driver
 
-      - name: Build examples/test-harness (PPC)
-        working-directory: examples/test-harness
-        run: cargo build --release
+      - name: Build examples/hello-library (link to ELF)
+        run: ./build.sh examples/hello-library
 
-      - name: Build examples/file-io-demo (PPC)
-        working-directory: examples/file-io-demo
-        run: cargo build --release
+      - name: Build examples/test-harness (link to ELF)
+        run: ./build.sh examples/test-harness
 
-      - name: Build examples/timer-demo (PPC)
-        working-directory: examples/timer-demo
-        run: cargo build --release
+      - name: Build examples/test-harness-gui (link to ELF)
+        run: ./build.sh examples/test-harness-gui
 
-      - name: Build examples/thread-demo (PPC)
-        working-directory: examples/thread-demo
-        run: cargo build --release
+      - name: Build examples/test-harness-net (link to ELF)
+        run: ./build.sh examples/test-harness-net
 
-      - name: Build examples/gui-demo (PPC)
-        working-directory: examples/gui-demo
-        run: cargo build --release
+      - name: Build examples/file-io-demo (link to ELF)
+        run: ./build.sh examples/file-io-demo
 
-      - name: Build examples/net-demo (PPC)
-        working-directory: examples/net-demo
-        run: cargo build --release
+      - name: Build examples/timer-demo (link to ELF)
+        run: ./build.sh examples/timer-demo
 
-      - name: Build examples/async-demo (PPC)
-        working-directory: examples/async-demo
-        run: cargo build --release
+      - name: Build examples/thread-demo (link to ELF)
+        run: ./build.sh examples/thread-demo
 
-      - name: Build examples/test-harness-gui (PPC)
-        working-directory: examples/test-harness-gui
-        run: cargo build --release
+      - name: Build examples/gui-demo (link to ELF)
+        run: ./build.sh examples/gui-demo
 
-      - name: Build examples/test-harness-net (PPC)
-        working-directory: examples/test-harness-net
-        run: cargo build --release
+      - name: Build examples/net-demo (link to ELF)
+        run: ./build.sh examples/net-demo
 
-      - name: Build examples/hello-library (PPC)
-        working-directory: examples/hello-library
-        run: cargo build --release
+      - name: Build examples/async-demo (link to ELF)
+        run: ./build.sh examples/async-demo
+
+      # ── Verify each example produced a PPC ELF ───────────────────
+      # Cheap insurance against `make all` silently no-op'ing.
+      - name: Verify ELF outputs
+        run: |
+          set -e
+          check() {
+            local f="$1"
+            if [ ! -s "$f" ]; then
+              echo "::error::missing or empty: $f"; exit 1
+            fi
+            file "$f" | grep -q 'ELF 32-bit MSB.*PowerPC' || {
+              echo "::error::not a PPC ELF: $f"; file "$f"; exit 1
+            }
+            echo "  ok: $f ($(stat -c%s "$f") bytes)"
+          }
+          check examples/hello/hello
+          check examples/hello-driver/hello-driver
+          check examples/hello-library/hello.library
+          check examples/test-harness/test-harness
+          check examples/test-harness-gui/test-harness-gui
+          check examples/test-harness-net/test-harness-net
+          check examples/file-io-demo/file-io-demo
+          check examples/timer-demo/timer-demo
+          check examples/thread-demo/thread-demo
+          check examples/gui-demo/gui-demo
+          check examples/net-demo/net-demo
+          check examples/async-demo/async-demo
 
       # ── Host-side tests ──────────────────────────────────────────
       # Run unit / integration tests for the amigaos4 crate on the
@@ -122,3 +149,34 @@ jobs:
       - name: Test amigaos4-alloc (host)
         working-directory: amigaos4-alloc
         run: cargo test --features exec
+
+      # ── Black-box test suite ─────────────────────────────────────
+      # signature_audit / sdk_audit / api smoke / regression / repro /
+      # combined_amigaos4 — all host-runnable, fast.
+      - name: Run Tests/ suite
+        working-directory: Tests
+        run: cargo test
+
+      # ── Artifacts ────────────────────────────────────────────────
+      # Upload the freshly-linked PPC ELFs so they can be grabbed from
+      # the workflow run without rebuilding locally.
+      - name: Upload PPC ELFs
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: amigaos4-elfs
+          path: |
+            examples/hello/hello
+            examples/hello-driver/hello-driver
+            examples/hello-library/hello.library
+            examples/test-harness/test-harness
+            examples/test-harness-gui/test-harness-gui
+            examples/test-harness-net/test-harness-net
+            examples/file-io-demo/file-io-demo
+            examples/timer-demo/timer-demo
+            examples/thread-demo/thread-demo
+            examples/gui-demo/gui-demo
+            examples/net-demo/net-demo
+            examples/async-demo/async-demo
+          if-no-files-found: error
+          retention-days: 14
