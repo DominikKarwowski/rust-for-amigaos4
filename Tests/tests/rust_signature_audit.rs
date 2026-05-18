@@ -141,10 +141,12 @@ fn is_base_interface_method(name: &str) -> bool {
 /// interfaces/ (uppercase mapping handled by parsing the struct decl
 /// inside the wrapper file).
 const INTERFACES: &[&str] = &[
-    "application", "asl", "bevel", "commodities", "datatypes", "diskfont", "dos",
-    "exec", "gadtools", "graphics", "icon", "iffparse", "intuition",
-    "keymap", "layers", "locale", "lowlevel", "misc", "popupmenu",
-    "realtime", "rexxsys", "timer", "utility", "version", "workbench",
+    "application", "asl", "bevel", "button", "checkbox", "commodities",
+    "datatypes", "diskfont", "dos", "exec", "filler", "fuelgauge",
+    "gadtools", "graphics", "icon", "iffparse", "integer", "intuition",
+    "keymap", "label", "layers", "locale", "lowlevel", "misc", "palette",
+    "penmap", "popupmenu", "realtime", "rexxsys", "scroller", "slider",
+    "space", "texteditor", "timer", "utility", "version", "workbench",
 ];
 
 /// One row of the audit table: which wrapper we expected for which
