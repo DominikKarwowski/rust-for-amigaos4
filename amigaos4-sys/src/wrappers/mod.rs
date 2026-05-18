@@ -6,12 +6,16 @@
 pub mod acpi;
 #[cfg(feature = "application")]
 pub mod application;
+#[cfg(feature = "arexx")]
+pub mod arexx;
 #[cfg(feature = "asl")]
 pub mod asl;
 #[cfg(feature = "battclock")]
 pub mod battclock;
 #[cfg(feature = "bevel")]
 pub mod bevel;
+#[cfg(feature = "bitmap_gc")]
+pub mod bitmap_gc;
 #[cfg(feature = "bootsd")]
 pub mod bootsd;
 #[cfg(feature = "bullet")]
@@ -78,6 +82,8 @@ pub mod hunk;
 pub mod i2c;
 #[cfg(feature = "icon")]
 pub mod icon;
+#[cfg(feature = "iconmodule")]
+pub mod iconmodule;
 #[cfg(feature = "iffparse")]
 pub mod iffparse;
 #[cfg(feature = "input")]
@@ -112,6 +118,8 @@ pub mod nv;
 pub mod palette;
 #[cfg(feature = "partition")]
 pub mod partition;
+#[cfg(feature = "pci")]
+pub mod pci;
 #[cfg(feature = "penmap")]
 pub mod penmap;
 #[cfg(feature = "picture")]
@@ -140,6 +148,10 @@ pub mod speedbar;
 pub mod slider;
 #[cfg(feature = "space")]
 pub mod space;
+#[cfg(feature = "speedbar")]
+pub mod speedbar;
+#[cfg(feature = "string_gc")]
+pub mod string_gc;
 #[cfg(feature = "textclip")]
 pub mod textclip;
 #[cfg(feature = "texteditor")]
