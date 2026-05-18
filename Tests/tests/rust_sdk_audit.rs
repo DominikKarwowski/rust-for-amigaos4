@@ -41,6 +41,7 @@ fn sdk_interfaces_dir() -> Option<PathBuf> {
 const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("application", "ApplicationIFace", None),
     ("asl", "AslIFace", None),
+    ("battclock", "BattClockIFace", None),
     ("bevel", "BevelIFace", None),
     ("bootsd", "BootSDIFace", None),
     ("bullet", "BulletIFace", None),
@@ -54,12 +55,14 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("console", "ConsoleIFace", None),
     ("datatypes", "DataTypesIFace", None),
     ("datebrowser", "DateBrowserIFace", None),
+    ("diffview", "DiffViewIFace", None),
     ("diskfont", "DiskfontIFace", None),
     ("diskio", "DiskIOIFace", None),
     ("dos", "DOSIFace", None),
     ("exec", "ExecIFace", None),
     ("expansion", "ExpansionIFace", None),
     ("filler", "FillerIFace", None),
+    ("fsldma", "fslDMAIFace", None),
     ("fuelgauge", "FuelGaugeIFace", None),
     ("gadtools", "GadToolsIFace", None),
     ("getcolor", "GetColorIFace", None),
@@ -96,6 +99,7 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("requester", "RequesterIFace", None),
     ("resource", "ResourceIFace", None),
     ("rexxsys", "RexxSysIFace", Some("rexxsyslib")),
+    ("screenblanker", "ScreenBlankerIFace", None),
     ("scroller", "ScrollerIFace", None),
     ("slider", "SliderIFace", None),
     ("space", "SpaceIFace", None),
@@ -107,6 +111,7 @@ const INTERFACES: &[(&str, &str, Option<&str>)] = &[
     ("timezone", "TimezoneIFace", None),
     ("utility", "UtilityIFace", None),
     ("version", "VersionIFace", None),
+    ("window", "WindowIFace", None),
     ("workbench", "WorkbenchIFace", Some("wb")),
 ];
 

@@ -141,17 +141,18 @@ fn is_base_interface_method(name: &str) -> bool {
 /// interfaces/ (uppercase mapping handled by parsing the struct decl
 /// inside the wrapper file).
 const INTERFACES: &[&str] = &[
-    "application", "asl", "bevel", "bootsd", "bullet", "button", "checkbox",
-    "chooser", "cia", "clicktab", "colorwheel", "commodities", "console",
-    "datatypes", "datebrowser", "diskfont", "diskio", "dos", "exec",
-    "expansion", "filler", "fuelgauge", "gadtools", "getcolor", "getfile",
-    "getfont", "getscreenmode", "glyph", "graphics", "hunk", "i2c", "icon",
-    "iffparse", "input", "integer", "intuition", "keymap", "label", "layers",
-    "layout", "listbrowser", "locale", "lowlevel", "misc", "mounter", "nv",
-    "palette", "partition", "penmap", "picture", "popupmenu", "radiobutton",
-    "realtime", "requester", "resource", "rexxsys", "scroller", "slider",
-    "space", "speedbar", "textclip", "texteditor", "timer", "timesync",
-    "timezone", "utility", "version", "workbench",
+    "application", "asl", "battclock", "bevel", "bootsd", "bullet", "button",
+    "checkbox", "chooser", "cia", "clicktab", "colorwheel", "commodities",
+    "console", "datatypes", "datebrowser", "diffview", "diskfont", "diskio",
+    "dos", "exec", "expansion", "filler", "fsldma", "fuelgauge", "gadtools",
+    "getcolor", "getfile", "getfont", "getscreenmode", "glyph", "graphics",
+    "hunk", "i2c", "icon", "iffparse", "input", "integer", "intuition",
+    "keymap", "label", "layers", "layout", "listbrowser", "locale",
+    "lowlevel", "misc", "mounter", "nv", "palette", "partition", "penmap",
+    "picture", "popupmenu", "radiobutton", "realtime", "requester",
+    "resource", "rexxsys", "screenblanker", "scroller", "slider", "space",
+    "speedbar", "textclip", "texteditor", "timer", "timesync", "timezone",
+    "utility", "version", "window", "workbench",
 ];
 
 /// One row of the audit table: which wrapper we expected for which
@@ -253,6 +254,36 @@ fn audit_covers_every_wrapper_file() {
     assert!(stale.is_empty(),
         "INTERFACES audit list references missing wrapper file(s): {:?}",
         stale);
+}
+
+#[test]
+fn every_wrapper_file_is_registered_in_mod_rs() {
+    // amigaos4-sys/src/wrappers/mod.rs must `#[cfg(feature="<name>")]
+    // pub mod <name>;` every wrapper file. A wrapper that exists on
+    // disk but isn't declared here gets silently excluded from the
+    // crate — features enable nothing, downstream code can't import.
+    let mod_rs = fs::read_to_string(
+        repo_root().join("amigaos4-sys/src/wrappers/mod.rs")
+    ).expect("mod.rs missing");
+    let wrappers_dir = repo_root().join("amigaos4-sys/src/wrappers");
+
+    let mut unregistered: Vec<String> = Vec::new();
+    for entry in fs::read_dir(&wrappers_dir).unwrap() {
+        let entry = entry.unwrap();
+        let name = entry.file_name().into_string().unwrap();
+        if !name.ends_with(".rs") { continue; }
+        let stem = name.trim_end_matches(".rs").to_string();
+        if stem == "mod" { continue; }
+        // Require both the cfg line AND the `pub mod` line for this name.
+        let cfg_line = format!("#[cfg(feature = \"{}\")]", stem);
+        let mod_line = format!("pub mod {};", stem);
+        if !mod_rs.contains(&cfg_line) || !mod_rs.contains(&mod_line) {
+            unregistered.push(stem);
+        }
+    }
+    assert!(unregistered.is_empty(),
+        "wrapper file(s) on disk but missing from wrappers/mod.rs:\n  - {}",
+        unregistered.join("\n  - "));
 }
 
 // ── 129-interface coverage ───────────────────────────────────

@@ -6,6 +6,8 @@
 pub mod application;
 #[cfg(feature = "asl")]
 pub mod asl;
+#[cfg(feature = "battclock")]
+pub mod battclock;
 #[cfg(feature = "bevel")]
 pub mod bevel;
 #[cfg(feature = "bootsd")]
@@ -32,6 +34,8 @@ pub mod console;
 pub mod datatypes;
 #[cfg(feature = "datebrowser")]
 pub mod datebrowser;
+#[cfg(feature = "diffview")]
+pub mod diffview;
 #[cfg(feature = "diskfont")]
 pub mod diskfont;
 #[cfg(feature = "diskio")]
@@ -44,6 +48,8 @@ pub mod exec;
 pub mod expansion;
 #[cfg(feature = "filler")]
 pub mod filler;
+#[cfg(feature = "fsldma")]
+pub mod fsldma;
 #[cfg(feature = "fuelgauge")]
 pub mod fuelgauge;
 #[cfg(feature = "gadtools")]
@@ -114,6 +120,8 @@ pub mod requester;
 pub mod resource;
 #[cfg(feature = "rexxsys")]
 pub mod rexxsys;
+#[cfg(feature = "screenblanker")]
+pub mod screenblanker;
 #[cfg(feature = "scroller")]
 pub mod scroller;
 #[cfg(feature = "speedbar")]
@@ -136,5 +144,7 @@ pub mod timezone;
 pub mod utility;
 #[cfg(feature = "version")]
 pub mod version;
+#[cfg(feature = "window")]
+pub mod window;
 #[cfg(feature = "workbench")]
 pub mod workbench;
