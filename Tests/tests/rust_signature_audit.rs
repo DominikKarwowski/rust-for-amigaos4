@@ -141,17 +141,17 @@ fn is_base_interface_method(name: &str) -> bool {
 /// interfaces/ (uppercase mapping handled by parsing the struct decl
 /// inside the wrapper file).
 const INTERFACES: &[&str] = &[
-    "application", "asl", "bevel", "bullet", "button", "checkbox", "chooser",
-    "cia", "clicktab", "colorwheel", "commodities", "console", "datatypes",
-    "datebrowser", "diskfont", "dos", "exec", "filler", "fuelgauge",
-    "gadtools", "getcolor", "getfile", "getfont", "getscreenmode", "glyph",
-    "graphics", "hunk", "icon", "iffparse", "input", "integer",
-    "intuition", "keymap", "label", "layers", "layout", "listbrowser",
-    "locale", "lowlevel", "misc", "mounter", "nv", "palette", "penmap",
-    "picture", "popupmenu", "radiobutton", "realtime", "requester",
-    "resource", "rexxsys", "scroller", "slider", "space", "speedbar",
-    "textclip", "texteditor", "timer", "timesync", "timezone", "utility",
-    "version", "workbench",
+    "application", "asl", "bevel", "bootsd", "bullet", "button", "checkbox",
+    "chooser", "cia", "clicktab", "colorwheel", "commodities", "console",
+    "datatypes", "datebrowser", "diskfont", "diskio", "dos", "exec",
+    "expansion", "filler", "fuelgauge", "gadtools", "getcolor", "getfile",
+    "getfont", "getscreenmode", "glyph", "graphics", "hunk", "i2c", "icon",
+    "iffparse", "input", "integer", "intuition", "keymap", "label", "layers",
+    "layout", "listbrowser", "locale", "lowlevel", "misc", "mounter", "nv",
+    "palette", "partition", "penmap", "picture", "popupmenu", "radiobutton",
+    "realtime", "requester", "resource", "rexxsys", "scroller", "slider",
+    "space", "speedbar", "textclip", "texteditor", "timer", "timesync",
+    "timezone", "utility", "version", "workbench",
 ];
 
 /// One row of the audit table: which wrapper we expected for which

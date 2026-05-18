@@ -8,6 +8,8 @@ pub mod application;
 pub mod asl;
 #[cfg(feature = "bevel")]
 pub mod bevel;
+#[cfg(feature = "bootsd")]
+pub mod bootsd;
 #[cfg(feature = "bullet")]
 pub mod bullet;
 #[cfg(feature = "button")]
@@ -32,10 +34,14 @@ pub mod datatypes;
 pub mod datebrowser;
 #[cfg(feature = "diskfont")]
 pub mod diskfont;
+#[cfg(feature = "diskio")]
+pub mod diskio;
 #[cfg(feature = "dos")]
 pub mod dos;
 #[cfg(feature = "exec")]
 pub mod exec;
+#[cfg(feature = "expansion")]
+pub mod expansion;
 #[cfg(feature = "filler")]
 pub mod filler;
 #[cfg(feature = "fuelgauge")]
@@ -56,6 +62,8 @@ pub mod glyph;
 pub mod graphics;
 #[cfg(feature = "hunk")]
 pub mod hunk;
+#[cfg(feature = "i2c")]
+pub mod i2c;
 #[cfg(feature = "icon")]
 pub mod icon;
 #[cfg(feature = "iffparse")]
@@ -88,6 +96,8 @@ pub mod mounter;
 pub mod nv;
 #[cfg(feature = "palette")]
 pub mod palette;
+#[cfg(feature = "partition")]
+pub mod partition;
 #[cfg(feature = "penmap")]
 pub mod penmap;
 #[cfg(feature = "picture")]
