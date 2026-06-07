@@ -37,6 +37,18 @@ error, tag, mem, port, screen, boopsi, window, gfx, requester, reaction, dos, lo
 **Application-only (clib4, feature-gated):**
 fs, time, env, thread, net, dns, http
 
+## Post-1.0 maintenance additions
+
+- `amigaos4::mem::AmigaPool` — safe RAII wrapper over exec `CreatePool`/
+  `AllocPooled`/`FreePooled`/`DeletePool` (alongside `AmigaVec`). Sub-allocations
+  are freed atomically when the pool drops (`DeletePool`), so it suits a unit of
+  work whose memory should all go away together. The raw FFI already existed in
+  `amigaos4-sys/src/wrappers/exec.rs`; this adds the safe layer.
+- `amigaos4::window` — `WA_REPORT_MOUSE` window tag constant.
+- `clib4-nightly` / `clib4-src` refreshed to upstream clib4 `778afb03` (pthread
+  per-thread-init crash fix).
+- CI (`.github/workflows/ci.yml`) runs on `main` only.
+
 ## Conventions
 
 - Debug: `amigaos4::serial_println!("x = {}", x)`

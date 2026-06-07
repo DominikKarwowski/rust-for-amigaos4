@@ -173,6 +173,22 @@ See `docs/phase10-progress.md` for full details.
 
 ---
 
+## Post-roadmap maintenance
+
+Additions made after the 10 phases were complete:
+
+- **`amigaos4::mem::AmigaPool`** — a safe RAII exec memory pool
+  (`CreatePool`/`AllocPooled`/`DeletePool`), companion to `AmigaVec`.
+  Sub-allocations are freed atomically when the pool is dropped — useful for a
+  contained unit of work. The raw `exec_*_pool` FFI already existed in
+  `amigaos4-sys`; this is the safe wrapper.
+- **`amigaos4::window::WA_REPORT_MOUSE`** — window tag constant.
+- **clib4 refreshed to upstream `778afb03`** — fixes a pthread
+  per-thread-init crash (`clib4-nightly/` binaries + `clib4-src/` submodule pin).
+- **CI scoped to `main`** — `.github/workflows/ci.yml` triggers on `main` only.
+
+---
+
 ## Non-Goals
 
 These are explicitly out of scope:
